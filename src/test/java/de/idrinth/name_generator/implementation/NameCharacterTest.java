@@ -6,6 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class NameCharacterTest {
+
     @Test
     public void testAddEndChance() {
         System.out.println("all");

@@ -7,16 +7,11 @@ import java.io.Writer;
 import org.json.JSONObject;
 
 public class DataCreator extends Data {
+
     public DataCreator() {
-        super();
-        //no data preloaded
-        one.clear();
-        two.clear();
-        three.clear();
-        four.clear();
-        length.clear();
-        starters.clear();
+        super(false);//no data preloaded
     }
+
     public void write(Writer output) throws IOException {
         JSONObject result = new JSONObject();
         result.append("one", listToJsonObject(one));
@@ -27,6 +22,7 @@ public class DataCreator extends Data {
         result.append("starters", listToJsonObject(starters));
         result.write(output).close();
     }
+
     private JSONObject listToJsonObject(IncrementableHashMap map) {
         JSONObject result = new JSONObject();
         map.keySet().forEach((key) -> {

@@ -6,13 +6,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class APITest {
+
     private static final String[] NAMES = "Hans\nHugo\nGerd\nAnna\nHera\nAnnabelle\nFranz\nFranziskus\nGuido\nMarkus\nMark\nAlbert\nJenny\nHolger\nFrederik\nAlexander\nAndreas\nBjörn\nManfred\nGotthelm".split("\n");
+
     @Test
     public void testMakeName() {
         System.out.println("makeName");
         API instance = new API();
         instance.addNameList(Arrays.asList(NAMES));
-        for(int I =0;I<1000;I++) {
+        for (int i = 0; i < 1000; i++) {
             assertFalse(instance.makeName().isEmpty());
         }
     }
@@ -48,8 +50,11 @@ public class APITest {
         instance.addNameList(Arrays.asList(NAMES));
         assertEquals(20, data.getAmount());
     }
+
     private class DataImpl implements DataProvider {
+
         private int amount;
+
         public int getAmount() {
             return amount;
         }

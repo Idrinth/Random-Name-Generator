@@ -6,6 +6,7 @@ import org.junit.Ignore;
 
 @Ignore("too expensive to test righ now")
 public class GenerationTest {
+
     @Test
     public void testRun() throws Exception {
         System.out.println("run");

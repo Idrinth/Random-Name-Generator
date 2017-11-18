@@ -27,5 +27,5 @@ public interface IncrementableList {
     BigInteger retrieve(char key);
 
     BigInteger retrieve(String key);
-    
+
 }

@@ -6,29 +6,34 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class WaitingServiceTest {
+
     @Test
-    public void testWaitTillReady() {
+    public void testWaitTillReady() throws InterruptedException {
         System.out.println("waitTillReady");
         assertTrue(checkDuration(0));
-        assertTrue(checkDuration(50));
-        assertTrue(checkDuration(100));
-        assertTrue(checkDuration(150));
+        assertTrue(checkDuration(5));
+        assertTrue(checkDuration(10));
+        assertTrue(checkDuration(15));
     }
-    private boolean checkDuration(int remaining) {
-        long r = 1000000000;
+
+    private boolean checkDuration(int remaining) throws InterruptedException {
+        long r = 10000000;
         DataProvider data = new DataImpl(remaining);
         long duration = 0;
-        for(int i=0;i<1000;i++) {
+        for (int i = 0; i < 10; i++) {
             long startTime = System.nanoTime();
             WaitingService.waitTillReady(data);
             long endTime = System.nanoTime();
             duration += (endTime - startTime);
         }
-        return(duration < (50+remaining)*r*1.1 && duration > (50+remaining)*r*0.9);
+        return (duration < (50 + remaining) * r * 1.1 && duration > (50 + remaining) * r * 0.9);
     }
+
     private class DataImpl implements DataProvider {
+
         private boolean ready = false;
         private final int rem;
+
         public DataImpl(int rem) {
             this.rem = rem;
         }
@@ -50,7 +55,7 @@ public class WaitingServiceTest {
 
         @Override
         public int getRemaining() {
-             return rem;
+            return rem;
         }
 
         @Override
