@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$id": "de.idrinth.name_generator",
+    "properties": {
+        "one": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        },
+        "two": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        },
+        "three": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        },
+        "four": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        },
+        "starters": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        },
+        "length": {
+            "type": "object",
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/amounts"
+                }
+            ]
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "amounts": {
+            "type": "object",
+            "description": "The absolute amount each group was found",
+            "patternProperties": {
+                "^.+$": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
