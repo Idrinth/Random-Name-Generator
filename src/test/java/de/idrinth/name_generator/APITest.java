@@ -11,7 +11,9 @@ public class APITest {
         System.out.println("makeName");
         API instance = new API();
         instance.addNameList(Arrays.asList(NAMES));
-        assertFalse(instance.makeName().isEmpty());
+        for(int I =0;I<1000;I++) {
+            assertFalse(instance.makeName().isEmpty());
+        }
     }
 
     @Test

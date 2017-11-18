@@ -4,6 +4,7 @@ import de.idrinth.name_generator.DataProvider;
 import de.idrinth.name_generator.NameCharacterProvider;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -104,19 +105,19 @@ public class Data implements DataProvider {
         });
         if(name.length()==0) {
             starters.keySet().forEach((c) -> {
-                result.add(c.charAt(0), starters.get(c));
+                result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(16)));
             });
         } else {
             two.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0))))).forEachOrdered((c) -> {
-                result.add(c.charAt(1), two.get(c));
+                result.add(c.charAt(1), two.get(c).multiply(BigInteger.valueOf(2)));
             });
             if(name.length() > 1) {
                 three.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0)+c.charAt(1))))).forEachOrdered((c) -> {
-                    result.add(c.charAt(2), three.get(c));
+                    result.add(c.charAt(2), three.get(c).multiply(BigInteger.valueOf(4)));
                 });
                 if(name.length() > 2) {
                     four.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0)+c.charAt(1)+c.charAt(2))))).forEachOrdered((c) -> {
-                        result.add(c.charAt(3), four.get(c));
+                        result.add(c.charAt(3), four.get(c).multiply(BigInteger.valueOf(8)));
                     });
                 }
             }
