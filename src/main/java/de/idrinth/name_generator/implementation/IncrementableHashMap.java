@@ -2,9 +2,9 @@ package de.idrinth.name_generator.implementation;
 
 import de.idrinth.name_generator.IncrementableList;
 import java.math.BigInteger;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class IncrementableHashMap extends HashMap<String, BigInteger> implements IncrementableList {
+public class IncrementableHashMap extends ConcurrentHashMap<String, BigInteger> implements IncrementableList {
     @Override
     public synchronized void increment(String key, BigInteger amount) {
         BigInteger now = containsKey(key) ? get(key) : BigInteger.ZERO;

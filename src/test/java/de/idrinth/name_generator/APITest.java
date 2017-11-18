@@ -1,5 +1,6 @@
 package de.idrinth.name_generator;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,6 +15,14 @@ public class APITest {
         for(int I =0;I<1000;I++) {
             assertFalse(instance.makeName().isEmpty());
         }
+    }
+
+    @Test
+    public void testMain() throws NoSuchMethodException {
+        System.out.println("main");
+        Method method = API.class.getMethod("main", String[].class);
+        assertNotNull(method);
+        assertEquals(void.class, method.getReturnType());
     }
 
     @Test
@@ -53,6 +62,21 @@ public class APITest {
         @Override
         public void parseString(String name) {
             amount++;
+        }
+
+        @Override
+        public void addString(String name) {
+            amount++;
+        }
+
+        @Override
+        public boolean isReady() {
+            return true;
+        }
+
+        @Override
+        public int getRemaining() {
+            return 0;
         }
     }
 }

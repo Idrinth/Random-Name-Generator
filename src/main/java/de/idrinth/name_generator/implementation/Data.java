@@ -2,6 +2,7 @@ package de.idrinth.name_generator.implementation;
 
 import de.idrinth.name_generator.DataProvider;
 import de.idrinth.name_generator.NameCharacterProvider;
+import de.idrinth.name_generator.services.WaitingService;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -67,9 +68,17 @@ public class Data implements DataProvider {
                 starters.increment(key, result.getJSONObject("starters").getBigInteger(key));
             });
         }
+        if(result.has("count")) {
+            count = result.getBigDecimal("count");
+        }
     }
 
-    private void addString(String name) {
+    @Override
+    public void addString(String name) {
+        name = name.trim();
+        if(name.isEmpty()) {
+            return;
+        }
         count = count.add(BigDecimal.ONE);
         name = name.toLowerCase();
         starters.increment(name.charAt(0));
@@ -82,17 +91,8 @@ public class Data implements DataProvider {
     }
     @Override
     public synchronized void parseString(String name) {
-        name = name.trim();
-        if(name.isEmpty()) {
-            return;
-        }
         addString(name);
-        while(!isReady()) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-            }
-        }
+        WaitingService.waitTillReady(this);
     }
     @Override
     public NameCharacterProvider getNext(String name) {
@@ -109,15 +109,15 @@ public class Data implements DataProvider {
             });
         } else {
             two.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0))))).forEachOrdered((c) -> {
-                result.add(c.charAt(1), two.get(c).multiply(BigInteger.valueOf(2)));
+                result.add(c.charAt(1), two.get(c).multiply(BigInteger.TEN));
             });
             if(name.length() > 1) {
                 three.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0)+c.charAt(1))))).forEachOrdered((c) -> {
-                    result.add(c.charAt(2), three.get(c).multiply(BigInteger.valueOf(4)));
+                    result.add(c.charAt(2), three.get(c).multiply(BigInteger.TEN).multiply(BigInteger.TEN));
                 });
                 if(name.length() > 2) {
                     four.keySet().stream().filter((c) -> (name.endsWith(String.valueOf(c.charAt(0)+c.charAt(1)+c.charAt(2))))).forEachOrdered((c) -> {
-                        result.add(c.charAt(3), four.get(c).multiply(BigInteger.valueOf(8)));
+                        result.add(c.charAt(3), four.get(c).multiply(BigInteger.TEN).multiply(BigInteger.TEN).multiply(BigInteger.TEN));
                     });
                 }
             }
@@ -125,13 +125,19 @@ public class Data implements DataProvider {
         return result;
     }
 
-    private synchronized boolean isReady() {
-        promises.removeIf((Future f)->{return f.isDone();});
+    @Override
+    public synchronized boolean isReady() {
         try {
+            promises.removeIf((Future f)->{return f.isDone();});
             return promises.stream().noneMatch((p) -> (!p.isDone()));
         } catch(ConcurrentModificationException e) {
             return false;
         }
+    }
+
+    @Override
+    public synchronized int getRemaining() {
+        return promises.size();
     }
     private class IncrementalListFiller implements Runnable {
         private final int length;

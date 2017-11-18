@@ -1,0 +1,9 @@
+/nbproject
+/.project
+/.classpath
+/nbactions.xml
+/nb-configuration.xml
+/target
+/bin
+/name_generator/nbproject/
+/name_generator/target/

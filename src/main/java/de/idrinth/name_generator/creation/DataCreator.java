@@ -2,9 +2,8 @@ package de.idrinth.name_generator.creation;
 
 import de.idrinth.name_generator.implementation.Data;
 import de.idrinth.name_generator.implementation.IncrementableHashMap;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import org.json.JSONObject;
 
 public class DataCreator extends Data {
@@ -18,7 +17,7 @@ public class DataCreator extends Data {
         length.clear();
         starters.clear();
     }
-    public void write(File output) throws IOException {
+    public void write(Writer output) throws IOException {
         JSONObject result = new JSONObject();
         result.append("one", listToJsonObject(one));
         result.append("two", listToJsonObject(two));
@@ -26,7 +25,7 @@ public class DataCreator extends Data {
         result.append("four", listToJsonObject(four));
         result.append("length", listToJsonObject(length));
         result.append("starters", listToJsonObject(starters));
-        result.write(new FileWriter(output)).close();
+        result.write(output).close();
     }
     private JSONObject listToJsonObject(IncrementableHashMap map) {
         JSONObject result = new JSONObject();
