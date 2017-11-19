@@ -1,6 +1,5 @@
 package de.idrinth.name_generator.service;
 
-import com.sun.media.jfxmediaimpl.platform.Platform;
 import de.idrinth.name_generator.ExpectedCostRunnable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
