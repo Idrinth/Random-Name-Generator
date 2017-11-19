@@ -1,36 +1,35 @@
 package de.idrinth.name_generator.implementation;
 
 import de.idrinth.name_generator.DataProvider;
+import de.idrinth.name_generator.ExpectedCostRunnable;
 import de.idrinth.name_generator.NameCharacterProvider;
-import de.idrinth.name_generator.services.WaitingService;
+import de.idrinth.name_generator.ThreadPoolStatus;
+import de.idrinth.name_generator.creation.DataCreator;
+import de.idrinth.name_generator.service.BoundedCacheThreadPoolExecutor;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.math.RoundingMode;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.io.IOUtils;
+import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 
 public class Data implements DataProvider {
-
     protected final IncrementableHashMap starters = new IncrementableHashMap();
 
     protected final IncrementableHashMap one = new IncrementableHashMap();
     protected final IncrementableHashMap two = new IncrementableHashMap();
     protected final IncrementableHashMap three = new IncrementableHashMap();
-    protected final IncrementableHashMap four = new IncrementableHashMap();
 
     protected final IncrementableHashMap length = new IncrementableHashMap();
     protected BigDecimal count = BigDecimal.ZERO;
 
-    protected final ExecutorService exe = Executors.newCachedThreadPool();
-    protected final List<Future> promises = new LinkedList<>();
+    protected final ThreadPoolStatus exe = new BoundedCacheThreadPoolExecutor(10);
 
     public Data() {
         this(true);
@@ -46,20 +45,26 @@ public class Data implements DataProvider {
         if (source == null) {
             return;
         }
-        JSONObject result = new JSONObject(source);
-        SchemaLoader.load(new JSONObject(this.getClass().getResourceAsStream("/schema.json"))).validate(result);
+        JSONObject result;
+        try {
+            result = new JSONObject(IOUtils.toString(source,"utf-8"));
+            SchemaLoader.load(new JSONObject(this.getClass().getResourceAsStream("/schema.json"))).validate(result);
+        } catch(ValidationException|IOException ex) {
+            Logger.getLogger(DataCreator.class.getName()).log(Level.SEVERE, null, ex);
+            return;
+        }
         addDataOfJSONObject(result, "one", one);
         addDataOfJSONObject(result, "two", two);
         addDataOfJSONObject(result, "three", three);
-        addDataOfJSONObject(result, "four", four);
         addDataOfJSONObject(result, "length", length);
         addDataOfJSONObject(result, "starters", starters);
+        count = count.add(result.getBigDecimal("count"));
     }
 
     private void addDataOfJSONObject(JSONObject result, String property, IncrementableHashMap map) {
         if (result.has(property)) {
             result.getJSONObject(property).keySet().forEach((key) -> {
-                map.increment(key, result.getJSONObject("starters").getBigInteger(key));
+                map.increment(key, result.getJSONObject(property).getBigInteger(key));
             });
         }
     }
@@ -68,37 +73,30 @@ public class Data implements DataProvider {
         return input.trim().toLowerCase();
     }
 
-    @Override
-    public void addString(String name) {
-        String input = getValidatedString(name);
-        if (input.isEmpty()) {
-            return;
-        }
+    private void addString(String input) {
         count = count.add(BigDecimal.ONE);
         starters.increment(input.charAt(0));
         length.increment(input.length());
         //Parsing
-        queue(exe.submit(new IncrementalListFiller(4, four, input)));
-        queue(exe.submit(new IncrementalListFiller(3, three, input)));
-        queue(exe.submit(new IncrementalListFiller(2, two, input)));
-        queue(exe.submit(new IncrementalListFiller(1, one, input)));
+        exe.submit(new IncrementalListFiller(3, three, input));
+        exe.submit(new IncrementalListFiller(2, two, input));
+        exe.submit(new IncrementalListFiller(1, one, input));
     }
 
     @Override
     public synchronized void parseString(String name) {
-        addString(name);
-        try {
-            WaitingService.waitTillReady(this);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        String input = getValidatedString(name);
+        if (input.isEmpty()) {
+            return;
         }
+        addString(input);
     }
 
     @Override
     public NameCharacterProvider getNext(String name) {
         NameCharacter result = new NameCharacter();
         length.keySet().stream().filter((l) -> (Integer.parseInt(l) <= name.length())).forEachOrdered((l) -> {
-            result.addEndChance(BigDecimal.valueOf(length.get(l).longValue()).divide(count));
+            result.addEndChance(BigDecimal.valueOf(length.get(l).longValue()).divide(count, 30, RoundingMode.HALF_EVEN));
         });
         if (name.length() == 0) {
             starters.keySet().forEach((c) -> {
@@ -108,7 +106,6 @@ public class Data implements DataProvider {
         addFromMapToResult(one,result,1,name);
         addFromMapToResult(two,result,2,name);
         addFromMapToResult(three,result,3,name);
-        addFromMapToResult(four,result,4,name);
         return result;
     }
     private void addFromMapToResult(IncrementableHashMap map, NameCharacterProvider result, int length, String name) {
@@ -119,28 +116,17 @@ public class Data implements DataProvider {
             result.add(c.charAt(length-1), map.get(c).multiply(BigInteger.TEN.pow(length-1)));
         });
     }
-
-    @Override
-    public synchronized boolean isReady() {
-        try {
-            promises.removeIf((Future f) -> {
-                return f.isDone();
-            });
-            return promises.stream().noneMatch((p) -> (!p.isDone()));
-        } catch (ConcurrentModificationException e) {
-            return false;
+    public void await() {
+        while(!exe.isIdle()) {
+            try {
+                TimeUnit.MICROSECONDS.sleep(100000+exe.getWaiting());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(DataCreator.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
-    private synchronized void queue(Future future) {
-        promises.add(future);
-    }
 
-    @Override
-    public synchronized int getRemaining() {
-        return promises.size();
-    }
-
-    private class IncrementalListFiller implements Runnable {
+    private class IncrementalListFiller implements ExpectedCostRunnable {
 
         private final int length;
         private final IncrementableHashMap map;
@@ -152,6 +138,10 @@ public class Data implements DataProvider {
             this.map = map;
             this.string = string;
             isInner = length == 1;
+        }
+        @Override
+        public int getExpectedCost() {
+            return string.length()*(isInner?length:length+1);
         }
 
         @Override
@@ -166,7 +156,7 @@ public class Data implements DataProvider {
             while (string.length() >= length) {
                 IncrementalListFiller filler = new IncrementalListFiller(length, map, string);
                 filler.isInner = true;
-                queue(exe.submit(filler));
+                exe.submit(filler);
                 string = string.substring(1);
             }
         }

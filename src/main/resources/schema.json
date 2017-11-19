@@ -26,14 +26,6 @@
                 }
             ]
         },
-        "four": {
-            "type": "object",
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/amounts"
-                }
-            ]
-        },
         "starters": {
             "type": "object",
             "oneOf": [
@@ -49,8 +41,13 @@
                     "$ref": "#/definitions/amounts"
                 }
             ]
+        },
+        "count": {
+            "type": "number",
+            "exclusiveMinimum": 0
         }
     },
+    "required": ["count"],
     "additionalProperties": false,
     "definitions": {
         "amounts": {

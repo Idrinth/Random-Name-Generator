@@ -68,20 +68,5 @@ public class APITest {
         public void parseString(String name) {
             amount++;
         }
-
-        @Override
-        public void addString(String name) {
-            amount++;
-        }
-
-        @Override
-        public boolean isReady() {
-            return true;
-        }
-
-        @Override
-        public int getRemaining() {
-            return 0;
-        }
     }
 }

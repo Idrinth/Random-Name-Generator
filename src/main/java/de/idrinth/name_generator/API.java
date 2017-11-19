@@ -2,11 +2,8 @@ package de.idrinth.name_generator;
 
 import de.idrinth.name_generator.creation.Generation;
 import de.idrinth.name_generator.implementation.Data;
-import de.idrinth.name_generator.services.WaitingService;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class API {
 
@@ -41,12 +38,7 @@ public class API {
 
     public void addNameList(List<String> names) {
         names.forEach((name) -> {
-            data.addString(name);
+            data.parseString(name);
         });
-        try {
-            WaitingService.waitTillReady(data);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(API.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }

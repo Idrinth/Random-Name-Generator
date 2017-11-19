@@ -22,7 +22,8 @@ public class DataTest {
         System.out.println("parseString");
         Data instance = new Data(false);
         instance.parseString(getLongRandomString());
-        assertTrue(instance.isReady());
+        assertNotNull(instance.getNext("").get());
+        assertNotEquals("", instance.getNext("").get());
     }
 
     @Test
@@ -52,7 +53,6 @@ public class DataTest {
             l.add(one.size() > 0);
             l.add(two.size() > 0);
             l.add(three.size() > 0);
-            l.add(four.size() > 0);
 
             return l;
         }
