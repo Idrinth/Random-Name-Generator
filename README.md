@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/Idrinth/Random-Name-Generator.svg?branch=master)](https://travis-ci.org/Idrinth/Random-Name-Generator)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/9204972bf0d343f099b352d75b196062)](https://www.codacy.com/app/Idrinth/Random-Name-Generator?utm_source=github.com&utm_medium=referral&utm_content=Idrinth/Random-Name-Generator&utm_campaign=Badge_Coverage)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9204972bf0d343f099b352d75b196062)](https://www.codacy.com/app/Idrinth/Random-Name-Generator?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Idrinth/Random-Name-Generator&amp;utm_campaign=Badge_Grade)
+[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#User/Repo)
 
 This is both a library for generating names as well as one for collecting data about names.
 
