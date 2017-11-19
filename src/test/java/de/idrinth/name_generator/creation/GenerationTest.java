@@ -1,16 +1,17 @@
 package de.idrinth.name_generator.creation;
 
+import java.io.File;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 
-@Ignore("too expensive to test righ now")
 public class GenerationTest {
-
     @Test
     public void testRun() throws Exception {
         System.out.println("run");
+        File file = new File("./src/main/resources/parsed/en.json");
+        long pre = file.lastModified();
         new Generation().run();
-        fail("The test case is a prototype.");
+        assertTrue(file.lastModified()>pre);
+        assertTrue(file.length() > 0);
     }
 }

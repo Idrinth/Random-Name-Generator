@@ -25,6 +25,7 @@ public class Data implements DataProvider {
     protected final IncrementableHashMap one = new IncrementableHashMap();
     protected final IncrementableHashMap two = new IncrementableHashMap();
     protected final IncrementableHashMap three = new IncrementableHashMap();
+    protected final IncrementableHashMap four = new IncrementableHashMap();
 
     protected final IncrementableHashMap length = new IncrementableHashMap();
     protected BigDecimal count = BigDecimal.ZERO;
@@ -56,6 +57,7 @@ public class Data implements DataProvider {
         addDataOfJSONObject(result, "one", one);
         addDataOfJSONObject(result, "two", two);
         addDataOfJSONObject(result, "three", three);
+        addDataOfJSONObject(result, "four", four);
         addDataOfJSONObject(result, "length", length);
         addDataOfJSONObject(result, "starters", starters);
         count = count.add(result.getBigDecimal("count"));
@@ -78,6 +80,7 @@ public class Data implements DataProvider {
         starters.increment(input.charAt(0));
         length.increment(input.length());
         //Parsing
+        exe.submit(new IncrementalListFiller(4, four, input));
         exe.submit(new IncrementalListFiller(3, three, input));
         exe.submit(new IncrementalListFiller(2, two, input));
         exe.submit(new IncrementalListFiller(1, one, input));
@@ -100,12 +103,13 @@ public class Data implements DataProvider {
         });
         if (name.length() == 0) {
             starters.keySet().forEach((c) -> {
-                result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(1000)));
+                result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(10000)));
             });
         }
         addFromMapToResult(one,result,1,name);
         addFromMapToResult(two,result,2,name);
         addFromMapToResult(three,result,3,name);
+        addFromMapToResult(four,result,4,name);
         return result;
     }
     private void addFromMapToResult(IncrementableHashMap map, NameCharacterProvider result, int length, String name) {
@@ -113,7 +117,10 @@ public class Data implements DataProvider {
             return;
         }
         map.keySet().stream().filter((c) -> (length==1 || name.endsWith(c.substring(0, length-1)))).forEachOrdered((c) -> {
-            result.add(c.charAt(length-1), map.get(c).multiply(BigInteger.TEN.pow(length-1)));
+            result.add(
+                c.charAt(length-1),
+                map.get(c).multiply(BigInteger.TEN.pow((length-1)*(length-1)))
+            );
         });
     }
     public void await() {

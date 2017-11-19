@@ -11,6 +11,10 @@ public class API {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new Generation().run();
+        API api = new API();
+        for(int i=0;i<1000;i++) {
+            System.out.println(api.makeName());
+        }
     }
 
     public API() {
@@ -26,6 +30,7 @@ public class API {
         while (true) {
             String temp = data.getNext(name.toString()).get();
             if (temp.isEmpty()) {
+                name.setCharAt(0, String.valueOf(name.charAt(0)).toUpperCase().charAt(0));
                 return name.toString();
             }
             name.append(temp);
