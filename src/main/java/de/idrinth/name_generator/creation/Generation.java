@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 public class Generation {
 
     public void run() throws IOException, InterruptedException {
-        for (File folder : new File("./src/main/resources/sources").listFiles()) {
+        for (File folder : new File("./sources").listFiles()) {
             System.out.println("Started folder "+folder);
             DataCreator data = new DataCreator();
             for (File file : folder.listFiles()) {

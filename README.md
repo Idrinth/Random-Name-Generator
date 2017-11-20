@@ -11,6 +11,7 @@ This is both a library for generating names as well as one for collecting data a
 
 Access the API-Class to generate names based on the default data. Length and Letter positioning are based on the data previously collected.
 Further names can be supplied as a list or one by one during runtime.
+The results are based on the length distribution as well as the distribution of character groups in the sources used. Longer strings of known characters are valued higher than shorter strings.
 
 ## Data Collection
 
