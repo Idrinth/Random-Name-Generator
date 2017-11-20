@@ -37,6 +37,18 @@ public class API {
         }
     }
 
+    public String makeName(Boolean multi) {
+        String name = makeName();
+        if(multi) {
+            for(int i=1;i<4;i++) {
+                if(Math.random() < Math.pow(0.1, i)) {
+                    name+=" "+makeName();
+                }
+            }
+        }
+        return name;
+    }
+
     public void addName(String name) {
         data.parseString(name);
     }

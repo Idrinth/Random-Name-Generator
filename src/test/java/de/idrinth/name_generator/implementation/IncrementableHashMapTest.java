@@ -102,7 +102,7 @@ public class IncrementableHashMapTest {
 
     @Test
     public void testRecieveUnknown() {
-        System.out.println("recieve unkniwn");
+        System.out.println("recieve unknown");
         IncrementableHashMap instance = new IncrementableHashMap();
         assertTrue(instance.retrieve(STRING_KEY).compareTo(BigInteger.ZERO) == 0);
     }

@@ -7,7 +7,6 @@ import java.io.Writer;
 import org.apache.commons.io.FileUtils;
 
 public class Generation {
-
     public void run() throws IOException, InterruptedException {
         for (File folder : new File("./sources").listFiles()) {
             System.out.println("Started folder "+folder);

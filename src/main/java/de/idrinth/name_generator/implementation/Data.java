@@ -98,7 +98,7 @@ public class Data implements DataProvider {
     @Override
     public NameCharacterProvider getNext(String name) {
         NameCharacter result = new NameCharacter();
-        length.keySet().stream().filter((l) -> (Integer.parseInt(l) <= name.length())).forEachOrdered((l) -> {
+        length.keySet().stream().filter((l) -> (Integer.parseInt(l)*(1+Math.round(Math.random())) <= name.length())).forEachOrdered((l) -> {
             result.addEndChance(BigDecimal.valueOf(length.get(l).longValue()).divide(count, 30, RoundingMode.HALF_EVEN));
         });
         if (name.length() == 0) {
@@ -119,7 +119,7 @@ public class Data implements DataProvider {
         map.keySet().stream().filter((c) -> (length==1 || name.endsWith(c.substring(0, length-1)))).forEachOrdered((c) -> {
             result.add(
                 c.charAt(length-1),
-                map.get(c).multiply(BigInteger.TEN.pow((length-1)*(length-1)))
+                map.get(c).multiply(BigInteger.valueOf(length*length*length))
             );
         });
     }
