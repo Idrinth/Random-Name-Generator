@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 public class DataCreator extends Data {
     public DataCreator() {
-        super(false);//no data preloaded
+        super();//no data preloaded
     }
     @Override
     public void await() {
@@ -35,10 +35,30 @@ public class DataCreator extends Data {
         result.write(output).close();
     }
 
+    private void addQuotedUtf8KeyChar(char c, StringBuilder sb)
+    {
+        if ((int) c > 128) {
+            String hhhh = Integer.toHexString(c);
+            sb.append("\\u").append("0000", 0, 4 - hhhh.length()).append(hhhh);
+            return;
+        }
+        sb.append(c);
+    }
+    private String quoteUtf8Key(String in)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (char c : in.toCharArray()) {
+            addQuotedUtf8KeyChar(c, sb);
+        }
+        return sb.toString();
+    }
     private JSONObject listToJsonObject(IncrementableHashMap map) {
         JSONObject result = new JSONObject();
         map.keySet().forEach((key) -> {
-            result.put(key, map.retrieve(key));
+            result.put(
+                quoteUtf8Key(key),
+                map.retrieve(key)
+            );
         });
         return result;
     }

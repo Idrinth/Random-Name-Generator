@@ -32,16 +32,21 @@ public class Data implements DataProvider {
 
     protected final ThreadPoolStatus exe = new BoundedCacheThreadPoolExecutor(10);
 
-    public Data() {
-        this(true);
+    @Deprecated
+    public Data(boolean load) {
+        if (load) {
+            addJSONtoData("en");
+        }
     }
-
-    public Data(boolean loadData) {
-        if (loadData) {
-            addJSONtoData(this.getClass().getResourceAsStream("/parsed/en.json"));
+    public Data(String ...languages) {
+        for (String language : languages) {
+            addJSONtoData(language);
         }
     }
 
+    final protected void addJSONtoData(String language) {
+        addJSONtoData(this.getClass().getResourceAsStream("/parsed/" + language + ".json"));
+    }
     final protected void addJSONtoData(InputStream source) {
         if (source == null) {
             return;

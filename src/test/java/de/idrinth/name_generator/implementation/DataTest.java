@@ -20,7 +20,7 @@ public class DataTest {
     @Test
     public void testParseString() {
         System.out.println("parseString");
-        Data instance = new Data(false);
+        Data instance = new Data("en");
         instance.parseString(getLongRandomString());
         assertNotNull(instance.getNext("").get());
         assertNotEquals("", instance.getNext("").get());
@@ -29,7 +29,7 @@ public class DataTest {
     @Test
     public void testGetNext() {
         System.out.println("getNext");
-        Data instance = new Data(false);
+        Data instance = new Data("en");
         instance.parseString(getLongRandomString());
         assertTrue(NameCharacter.class.isInstance(instance.getNext("")));
     }

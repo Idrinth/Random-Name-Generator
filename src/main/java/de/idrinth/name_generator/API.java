@@ -17,8 +17,11 @@ public class API {
         }
     }
 
-    public API() {
-        this(new Data());
+    public API(String ...languages) {
+        this.data = new Data(languages);
+    }
+    public API(boolean fill) {
+        this.data = fill ? new Data("en", "de") : new Data();
     }
 
     public API(DataProvider data) {
@@ -29,7 +32,8 @@ public class API {
         StringBuilder name = new StringBuilder();
         while (true) {
             String temp = data.getNext(name.toString()).get();
-            if (temp.isEmpty()) {
+            System.out.println(temp);
+            if (!temp.isEmpty()) {
                 name.setCharAt(0, String.valueOf(name.charAt(0)).toUpperCase().charAt(0));
                 return name.toString();
             }
@@ -55,7 +59,12 @@ public class API {
 
     public void addNameList(List<String> names) {
         names.forEach((name) -> {
-            data.parseString(name);
+            addName(name);
         });
+    }
+    public void addNames(String ...names) {
+        for (String name : names) {
+            addName(name);
+        }
     }
 }

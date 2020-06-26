@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.FileUtils;
 
 public class Generation {
@@ -12,7 +13,7 @@ public class Generation {
             System.out.println("Started folder "+folder);
             DataCreator data = new DataCreator();
             for (File file : folder.listFiles()) {
-                for (Object name : FileUtils.readLines(file, "utf-8")) {
+                for (Object name : FileUtils.readLines(file, StandardCharsets.UTF_8)) {
                     data.parseString((String) name);
                 }
             }

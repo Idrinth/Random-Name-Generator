@@ -2,7 +2,6 @@ package de.idrinth.name_generator;
 
 import de.idrinth.name_generator.service.BoundedCacheThreadPoolExecutor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +16,7 @@ public class APITest {
     public void testMakeName() {
         System.out.println("makeName");
         API instance = new API();
-        instance.addNameList(Arrays.asList(NAMES));
+        instance.addNames(NAMES);
         assertFalse(instance.makeName().isEmpty());
     }
 
@@ -25,7 +24,7 @@ public class APITest {
     public void testMakeMultiName() {
         System.out.println("makeName multi");
         API instance = new API();
-        instance.addNameList(Arrays.asList(NAMES));
+        instance.addNames(NAMES);
         assertFalse(instance.makeName(true).isEmpty());
     }
 
@@ -57,7 +56,7 @@ public class APITest {
         DataImpl data = new DataImpl();
         API instance = new API(data);
         assertEquals(0, data.getAmount());
-        instance.addNameList(Arrays.asList(NAMES));
+        instance.addNames(NAMES);
         assertEquals(20, data.getAmount());
     }
 
@@ -71,7 +70,7 @@ public class APITest {
             exe.submit(new ThreaddedSingleNameGen(api, map));
         }
         exe.shutdown();
-        exe.awaitTermination(1, TimeUnit.HOURS);
+        exe.awaitTermination(5, TimeUnit.MINUTES);
         int found = map.numDuplicates();
         System.out.println("found "+found+" of 5 allowed duplicates in 1,000");
         assertTrue(found<5);
@@ -89,7 +88,7 @@ public class APITest {
             exe.submit(new ThreaddedMultiNameGen(api, map));
         }
         exe.shutdown();
-        exe.awaitTermination(1, TimeUnit.HOURS);
+        exe.awaitTermination(5, TimeUnit.MINUTES);
         int found = map.numDuplicates();
         System.out.println("found "+found+" of 2 allowed duplicates in 1,000");
         assertTrue(found<2);
