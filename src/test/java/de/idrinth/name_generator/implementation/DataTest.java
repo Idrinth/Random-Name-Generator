@@ -1,8 +1,6 @@
 package de.idrinth.name_generator.implementation;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -39,22 +37,38 @@ public class DataTest {
         System.out.println("initialisation from file");
         DataAccess instance = new DataAccess();
         assertNotNull(instance);
-        instance.getCounts().forEach((check) -> {
-            assertTrue(check);
-        });
+        assertTrue(instance.hasStarter());
+        assertTrue(instance.hasLength());
+        assertTrue(instance.hasCount());
+        assertTrue(instance.hasOne());
+        assertTrue(instance.hasTwo());
+        assertTrue(instance.hasThree());
+        assertTrue(instance.hasFour());
     }
     private class DataAccess extends Data {
-        public List<Boolean> getCounts() {
-            List<Boolean> l = new ArrayList<>();
-            l.add(starters.size() > 0);
-            l.add(length.size() > 0);
-            l.add(count.compareTo(BigDecimal.ZERO) > 0);
-
-            l.add(one.size() > 0);
-            l.add(two.size() > 0);
-            l.add(three.size() > 0);
-
-            return l;
+        public DataAccess() {
+            super(true);
+        }
+        public boolean hasStarter() {
+            return starters.size() > 0;
+        }
+        public boolean hasLength() {
+            return length.size() > 0;
+        }
+        public boolean hasCount() {
+            return count.compareTo(BigDecimal.ZERO) > 0;
+        }
+        public boolean hasOne() {
+            return one.size() > 0;
+        }
+        public boolean hasTwo() {
+            return two.size() > 0;
+        }
+        public boolean hasThree() {
+            return three.size() > 0;
+        }
+        public boolean hasFour() {
+            return four.size() > 0;
         }
     }
 }
