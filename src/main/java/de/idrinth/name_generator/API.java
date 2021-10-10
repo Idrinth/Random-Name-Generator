@@ -1,38 +1,50 @@
 package de.idrinth.name_generator;
 
 import de.idrinth.name_generator.creation.Generation;
-import de.idrinth.name_generator.implementation.Data;
+import de.idrinth.name_generator.implementation.FirstNameLoader;
+import de.idrinth.name_generator.implementation.LastNameLoader;
 import de.idrinth.name_generator.implementation.MultiLanguageData;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import org.apache.commons.io.IOUtils;
 
 public class API {
 
-    private final DataProvider data;
+    private final DataProvider firstNames;
+    private final DataProvider lastNames;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new Generation().run();
-        API api = new API();
-        for(int i=0;i<1000;i++) {
-            System.out.println(api.makeName());
+    }
+    public static String[] languages() {
+        try {
+            InputStream stream = API.class.getResourceAsStream("/languages.txt");
+            return IOUtils.toString(stream, "UTF-8").split("\n");
+        } catch (IOException ex) {
+            return new String[0];
         }
     }
 
     public API(String ...languages) {
-        this.data = languages.length > 1 ? new MultiLanguageData(languages) : new Data(languages);
+        this(
+            new MultiLanguageData(new FirstNameLoader(), languages),
+            new MultiLanguageData(new LastNameLoader(), languages)
+        );
     }
-    public API(boolean fill) {
-        this.data = fill ? new MultiLanguageData("en", "de") : new Data();
+    public API(DataProvider firstNames, DataProvider lastNames) {
+        this.lastNames = lastNames;
+        this.firstNames = firstNames;
     }
-
-    public API(DataProvider data) {
-        this.data = data;
-    }
-
-    public String makeName() {
+    
+    private String makeName(DataProvider provider)
+    {
+        if (provider.isEmpty()) {
+            throw new IndexOutOfBoundsException("Dataprovider is empty");
+        }
         StringBuilder name = new StringBuilder();
         while (true) {
-            String temp = data.getNext(name.toString()).get();
+            String temp = provider.getNext(name.toString()).get();
             if (!temp.isEmpty()) {
                 name.setCharAt(0, String.valueOf(name.charAt(0)).toUpperCase().charAt(0));
                 return name.toString();
@@ -41,28 +53,50 @@ public class API {
         }
     }
 
-    public String makeName(boolean multi) {
-        String name = makeName();
-        if(multi) {
-            for(int i=1;i<4;i++) {
-                if(Math.random() < Math.pow(0.1, i)) {
-                    name += " " + makeName();
-                }
-            }
+    public String makeFirstName() {
+        return makeName(firstNames);
+    }
+
+    public String makeLastName() {
+        return makeName(lastNames);
+    }
+
+    public String makeFullName() {
+        switch ((int) Math.floor(Math.random() * 4)) {
+            case 1:
+                return makeFirstName() + " " + makeFirstName() + " " + makeLastName();
+            case 2:
+                return makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeLastName();
+            case 3:
+                return makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeLastName();
+            default:
+                return makeFirstName() + " " + makeLastName();
         }
-        return name;
     }
 
-    public void addName(String name) {
-        data.parseString(name);
+    public void addFirstName(String name) {
+        firstNames.parseString(name);
     }
 
-    public void addNameList(List<String> names) {
-        names.forEach(this::addName);
+    public void addFirstNames(List<String> names) {
+        names.forEach(this::addFirstName);
     }
-    public void addNames(String ...names) {
+    public void addFirstNames(String ...names) {
         for (String name : names) {
-            addName(name);
+            addFirstName(name);
+        }
+    }
+
+    public void addLastName(String name) {
+        lastNames.parseString(name);
+    }
+
+    public void addLastNames(List<String> names) {
+        names.forEach(this::addLastName);
+    }
+    public void addLastNames(String ...names) {
+        for (String name : names) {
+            addLastName(name);
         }
     }
 }

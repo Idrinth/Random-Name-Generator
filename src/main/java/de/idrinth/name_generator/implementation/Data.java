@@ -1,8 +1,10 @@
 package de.idrinth.name_generator.implementation;
 
+import de.idrinth.name_generator.Configuration;
 import de.idrinth.name_generator.DataProvider;
 import de.idrinth.name_generator.ExpectedCostRunnable;
 import de.idrinth.name_generator.NameCharacterProvider;
+import de.idrinth.name_generator.NameLoader;
 import de.idrinth.name_generator.ThreadPoolStatus;
 import de.idrinth.name_generator.creation.DataCreator;
 import de.idrinth.name_generator.service.BoundedCacheThreadPoolExecutor;
@@ -29,24 +31,26 @@ public class Data implements DataProvider {
 
     protected final IncrementableHashMap length = new IncrementableHashMap();
     protected BigDecimal count = BigDecimal.ZERO;
+    protected final Configuration config;
 
     protected final ThreadPoolStatus exe = new BoundedCacheThreadPoolExecutor(10);
 
-    @Deprecated
-    public Data(boolean load) {
-        if (load) {
-            addJSONtoData("en");
-        }
+    public Data() {
+        this(null, new DefaultConfiguration());
     }
-    public Data(String ...languages) {
+    public Data(Configuration config) {
+        this(null, config);
+    }
+    public Data(NameLoader loader, String ...languages) {
+        this(loader, new DefaultConfiguration(), languages);
+    }
+    public Data(NameLoader loader, Configuration config, String ...languages) {
+        this.config = config;
         for (String language : languages) {
-            addJSONtoData(language);
+            addJSONtoData(loader.load(language));
         }
     }
 
-    final protected void addJSONtoData(String language) {
-        addJSONtoData(this.getClass().getResourceAsStream("/parsed/" + language + ".json"));
-    }
     final protected void addJSONtoData(InputStream source) {
         if (source == null) {
             return;
@@ -108,23 +112,23 @@ public class Data implements DataProvider {
         });
         if (name.length() == 0) {
             starters.keySet().forEach((c) -> {
-                result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(10000)));
+                result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(config.getMultiplierStarters())));
             });
         }
-        addFromMapToResult(one,result,1,name);
-        addFromMapToResult(two,result,2,name);
-        addFromMapToResult(three,result,3,name);
-        addFromMapToResult(four,result,4,name);
+        addFromMapToResult(one,result,1,name, config.getMultiplierOne());
+        addFromMapToResult(two,result,2,name, config.getMultiplierTwo());
+        addFromMapToResult(three,result,3,name, config.getMultiplierThree());
+        addFromMapToResult(four,result,4,name, config.getMultiplierFour());
         return result;
     }
-    private void addFromMapToResult(IncrementableHashMap map, NameCharacterProvider result, int length, String name) {
+    private void addFromMapToResult(IncrementableHashMap map, NameCharacterProvider result, int length, String name, int multiplier) {
         if (name.length() < length-1) {
             return;
         }
         map.keySet().stream().filter((c) -> (length==1 || name.endsWith(c.substring(0, length-1)))).forEachOrdered((c) -> {
             result.add(
                 c.charAt(length-1),
-                map.get(c).multiply(BigInteger.valueOf(length*length*length))
+                map.get(c).multiply(BigInteger.valueOf(multiplier))
             );
         });
     }
@@ -136,6 +140,11 @@ public class Data implements DataProvider {
                 Logger.getLogger(DataCreator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return one.isEmpty() && two.isEmpty() && three.isEmpty() && four.isEmpty() && starters.isEmpty();
     }
 
     private class IncrementalListFiller implements ExpectedCostRunnable {
