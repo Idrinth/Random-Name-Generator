@@ -18,7 +18,7 @@ public class DataTest {
     @Test
     public void testParseString() {
         System.out.println("parseString");
-        Data instance = new Data("en");
+        Data instance = new Data(new FirstNameLoader(), "en");
         instance.parseString(getLongRandomString());
         assertNotNull(instance.getNext("").get());
         assertNotEquals("", instance.getNext("").get());
@@ -27,7 +27,7 @@ public class DataTest {
     @Test
     public void testGetNext() {
         System.out.println("getNext");
-        Data instance = new Data("en");
+        Data instance = new Data(new FirstNameLoader(), "en");
         instance.parseString(getLongRandomString());
         assertTrue(NameCharacter.class.isInstance(instance.getNext("")));
     }
@@ -47,7 +47,7 @@ public class DataTest {
     }
     private class DataAccess extends Data {
         public DataAccess() {
-            super(true);
+            super(new FirstNameLoader(), "en");
         }
         public boolean hasStarter() {
             return starters.size() > 0;

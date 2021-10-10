@@ -16,16 +16,17 @@ public class APITest {
     public void testMakeName() {
         System.out.println("makeName");
         API instance = new API();
-        instance.addNames(NAMES);
-        assertFalse(instance.makeName().isEmpty());
+        instance.addFirstNames(NAMES);
+        assertFalse(instance.makeFirstName().isEmpty());
     }
 
     @Test
     public void testMakeMultiName() {
         System.out.println("makeName multi");
         API instance = new API();
-        instance.addNames(NAMES);
-        assertFalse(instance.makeName(true).isEmpty());
+        instance.addFirstNames(NAMES);
+        instance.addLastNames(NAMES);
+        assertFalse(instance.makeFullName().isEmpty());
     }
 
     @Test
@@ -40,13 +41,13 @@ public class APITest {
     public void testAddName() {
         System.out.println("addName");
         DataImpl data = new DataImpl();
-        API instance = new API(data);
+        API instance = new API(data, data);
         assertEquals(0, data.getAmount());
-        instance.addName(NAMES[0]);
+        instance.addFirstName(NAMES[0]);
         assertEquals(1, data.getAmount());
-        instance.addName(NAMES[1]);
+        instance.addFirstName(NAMES[1]);
         assertEquals(2, data.getAmount());
-        instance.addName(NAMES[2]);
+        instance.addFirstName(NAMES[2]);
         assertEquals(3, data.getAmount());
     }
 
@@ -54,9 +55,9 @@ public class APITest {
     public void testAddNameList() {
         System.out.println("addNameList");
         DataImpl data = new DataImpl();
-        API instance = new API(data);
+        API instance = new API(data,data);
         assertEquals(0, data.getAmount());
-        instance.addNames(NAMES);
+        instance.addFirstNames(NAMES);
         assertEquals(20, data.getAmount());
     }
 
@@ -103,7 +104,7 @@ public class APITest {
         }
         @Override
         public void run() {
-            map.increment(api.makeName());
+            map.increment(api.makeFirstName());
         }
     }
 
@@ -113,7 +114,7 @@ public class APITest {
         }
         @Override
         public void run() {
-            String name = api.makeName(true);
+            String name = api.makeFullName();
             map.increment(name);
             int spaces = name.replaceAll("[^ ]","").length();
             for(int i=0;i<spaces;i++) {
@@ -161,6 +162,11 @@ public class APITest {
         @Override
         public void parseString(String name) {
             amount++;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return amount == 0;
         }
     }
 }
