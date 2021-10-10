@@ -1,9 +1,1 @@
-/nbproject
-/.project
-/.classpath
-/nbactions.xml
-/nb-configuration.xml
-/target
-/bin
-/src/main/resources/parsed
-/src/main/resources/languages.txt
+/plugin/target/
