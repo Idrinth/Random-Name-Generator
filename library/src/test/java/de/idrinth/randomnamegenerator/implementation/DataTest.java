@@ -1,4 +1,4 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
 import java.math.BigDecimal;
 import org.junit.Test;

@@ -1,6 +1,7 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
-import de.idrinth.name_generator.NameCharacterProvider;
+import de.idrinth.randomnamegenerator.NameCharacterProvider;
+import de.idrinth.randomnamegenerator.shared.IncrementableHashMap;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 

@@ -1,6 +1,5 @@
-package de.idrinth.name_generator.service;
+package de.idrinth.randomnamegenerator.shared;
 
-import de.idrinth.name_generator.ThreadPoolStatus;
 import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;

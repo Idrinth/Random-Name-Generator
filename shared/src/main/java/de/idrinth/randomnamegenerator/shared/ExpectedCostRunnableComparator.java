@@ -1,4 +1,4 @@
-package de.idrinth.randomnamegenerator.plugin;
+package de.idrinth.randomnamegenerator.shared;
 
 import java.util.Comparator;
 

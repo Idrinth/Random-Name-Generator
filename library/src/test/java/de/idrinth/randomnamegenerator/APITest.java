@@ -1,6 +1,6 @@
-package de.idrinth.name_generator;
+package de.idrinth.randomnamegenerator;
 
-import de.idrinth.name_generator.service.BoundedCacheThreadPoolExecutor;
+import de.idrinth.randomnamegenerator.shared.BoundedCacheThreadPoolExecutor;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;

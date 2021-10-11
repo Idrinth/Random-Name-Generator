@@ -1,13 +1,13 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
-import de.idrinth.name_generator.Configuration;
-import de.idrinth.name_generator.DataProvider;
-import de.idrinth.name_generator.ExpectedCostRunnable;
-import de.idrinth.name_generator.NameCharacterProvider;
-import de.idrinth.name_generator.NameLoader;
-import de.idrinth.name_generator.ThreadPoolStatus;
-import de.idrinth.name_generator.creation.DataCreator;
-import de.idrinth.name_generator.service.BoundedCacheThreadPoolExecutor;
+import de.idrinth.randomnamegenerator.Configuration;
+import de.idrinth.randomnamegenerator.DataProvider;
+import de.idrinth.randomnamegenerator.NameCharacterProvider;
+import de.idrinth.randomnamegenerator.NameLoader;
+import de.idrinth.randomnamegenerator.shared.BoundedCacheThreadPoolExecutor;
+import de.idrinth.randomnamegenerator.shared.ExpectedCostRunnable;
+import de.idrinth.randomnamegenerator.shared.IncrementableHashMap;
+import de.idrinth.randomnamegenerator.shared.ThreadPoolStatus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -60,7 +60,7 @@ public class Data implements DataProvider {
             result = new JSONObject(IOUtils.toString(source,"utf-8"));
             SchemaLoader.load(new JSONObject(this.getClass().getResourceAsStream("/schema.json"))).validate(result);
         } catch(ValidationException|IOException ex) {
-            Logger.getLogger(DataCreator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
         addDataOfJSONObject(result, "one", one);
@@ -137,7 +137,7 @@ public class Data implements DataProvider {
             try {
                 TimeUnit.MICROSECONDS.sleep(100000+exe.getWaiting());
             } catch (InterruptedException ex) {
-                Logger.getLogger(DataCreator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

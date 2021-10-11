@@ -36,6 +36,11 @@
             <artifactId>org.everit.json.schema</artifactId>
             <version>1.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>de.idrinth.random-name-generator</groupId>
+            <artifactId>shared</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>

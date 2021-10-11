@@ -1,6 +1,6 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
-import de.idrinth.name_generator.NameLoader;
+import de.idrinth.randomnamegenerator.NameLoader;
 import java.io.InputStream;
 
 public class FirstNameLoader implements NameLoader

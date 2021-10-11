@@ -1,9 +1,9 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
-import de.idrinth.name_generator.Configuration;
-import de.idrinth.name_generator.DataProvider;
-import de.idrinth.name_generator.NameCharacterProvider;
-import de.idrinth.name_generator.NameLoader;
+import de.idrinth.randomnamegenerator.Configuration;
+import de.idrinth.randomnamegenerator.DataProvider;
+import de.idrinth.randomnamegenerator.NameCharacterProvider;
+import de.idrinth.randomnamegenerator.NameLoader;
 import java.util.HashMap;
 
 public class MultiLanguageData implements DataProvider {

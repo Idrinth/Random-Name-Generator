@@ -1,9 +1,8 @@
-package de.idrinth.name_generator;
+package de.idrinth.randomnamegenerator;
 
-import de.idrinth.name_generator.creation.Generation;
-import de.idrinth.name_generator.implementation.FirstNameLoader;
-import de.idrinth.name_generator.implementation.LastNameLoader;
-import de.idrinth.name_generator.implementation.MultiLanguageData;
+import de.idrinth.randomnamegenerator.implementation.FirstNameLoader;
+import de.idrinth.randomnamegenerator.implementation.LastNameLoader;
+import de.idrinth.randomnamegenerator.implementation.MultiLanguageData;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -14,8 +13,11 @@ public class API {
     private final DataProvider firstNames;
     private final DataProvider lastNames;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        new Generation().run();
+    public static void main(String[] args) {
+        API api = new API(API.languages());
+        for (int i=0; i < 1000; i++) {
+            System.out.println(api.makeFullName());
+        }
     }
     public static String[] languages() {
         try {

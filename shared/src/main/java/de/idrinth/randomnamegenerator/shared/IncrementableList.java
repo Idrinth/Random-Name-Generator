@@ -1,4 +1,4 @@
-package de.idrinth.name_generator;
+package de.idrinth.randomnamegenerator.shared;
 
 import java.math.BigInteger;
 

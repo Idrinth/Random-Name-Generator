@@ -1,6 +1,6 @@
-package de.idrinth.name_generator.implementation;
+package de.idrinth.randomnamegenerator.implementation;
 
-import de.idrinth.name_generator.Configuration;
+import de.idrinth.randomnamegenerator.Configuration;
 
 public class DefaultConfiguration implements Configuration{
     @Override

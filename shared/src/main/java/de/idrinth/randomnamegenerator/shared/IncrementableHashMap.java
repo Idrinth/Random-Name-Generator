@@ -1,4 +1,4 @@
-package de.idrinth.randomnamegenerator.plugin;
+package de.idrinth.randomnamegenerator.shared;
 
 import java.math.BigInteger;
 import java.util.concurrent.ConcurrentHashMap;

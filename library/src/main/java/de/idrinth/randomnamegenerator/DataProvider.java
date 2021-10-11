@@ -1,4 +1,4 @@
-package de.idrinth.name_generator;
+package de.idrinth.randomnamegenerator;
 
 public interface DataProvider {
     NameCharacterProvider getNext(String name);
