@@ -4,6 +4,7 @@ import de.idrinth.randomnamegenerator.Configuration;
 import de.idrinth.randomnamegenerator.DataProvider;
 import de.idrinth.randomnamegenerator.NameCharacterProvider;
 import de.idrinth.randomnamegenerator.NameLoader;
+import de.idrinth.randomnamegenerator.NoData;
 import de.idrinth.randomnamegenerator.shared.BoundedCacheThreadPoolExecutor;
 import de.idrinth.randomnamegenerator.shared.ExpectedCostRunnable;
 import de.idrinth.randomnamegenerator.shared.IncrementableHashMap;
@@ -13,6 +14,8 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,29 +24,33 @@ import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
 
-public class Data implements DataProvider {
-    protected final IncrementableHashMap starters = new IncrementableHashMap();
+public final class Data implements DataProvider {
+    private final IncrementableHashMap starters = new IncrementableHashMap();
 
-    protected final IncrementableHashMap one = new IncrementableHashMap();
-    protected final IncrementableHashMap two = new IncrementableHashMap();
-    protected final IncrementableHashMap three = new IncrementableHashMap();
-    protected final IncrementableHashMap four = new IncrementableHashMap();
+    private final IncrementableHashMap one = new IncrementableHashMap();
+    private final IncrementableHashMap two = new IncrementableHashMap();
+    private final IncrementableHashMap three = new IncrementableHashMap();
+    private final IncrementableHashMap four = new IncrementableHashMap();
 
-    protected final IncrementableHashMap length = new IncrementableHashMap();
-    protected BigDecimal count = BigDecimal.ZERO;
-    protected final Configuration config;
+    private final IncrementableHashMap length = new IncrementableHashMap();
+    private BigDecimal count = BigDecimal.ZERO;
+    private final Configuration config;
+    private final Random rand = ThreadLocalRandom.current();
 
-    protected final ThreadPoolStatus exe = new BoundedCacheThreadPoolExecutor(10);
+    private final ThreadPoolStatus exe = new BoundedCacheThreadPoolExecutor(10);
 
     public Data() {
         this(null, new DefaultConfiguration());
     }
+
     public Data(Configuration config) {
         this(null, config);
     }
+
     public Data(NameLoader loader, String ...languages) {
         this(loader, new DefaultConfiguration(), languages);
     }
+
     public Data(NameLoader loader, Configuration config, String ...languages) {
         this.config = config;
         for (String language : languages) {
@@ -51,7 +58,7 @@ public class Data implements DataProvider {
         }
     }
 
-    final protected void addJSONtoData(InputStream source) {
+    private final void addJSONtoData(InputStream source) {
         if (source == null) {
             return;
         }
@@ -105,12 +112,15 @@ public class Data implements DataProvider {
     }
 
     @Override
-    public NameCharacterProvider getNext(String name) {
+    public NameCharacterProvider getNext(String name) {        
+        if (isEmpty()) {
+            throw new NoData();
+        }
         NameCharacter result = new NameCharacter();
-        length.keySet().stream().filter((l) -> (Integer.parseInt(l)*(1+Math.round(Math.random())) <= name.length())).forEachOrdered((l) -> {
+        length.keySet().stream().filter((l) -> (Integer.parseInt(l)*(1+rand.nextInt(1)) <= name.length())).forEachOrdered((l) -> {
             result.addEndChance(BigDecimal.valueOf(length.get(l).longValue()).divide(count, 30, RoundingMode.HALF_EVEN));
         });
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             starters.keySet().forEach((c) -> {
                 result.add(c.charAt(0), starters.get(c).multiply(BigInteger.valueOf(config.getMultiplierStarters())));
             });
@@ -132,6 +142,7 @@ public class Data implements DataProvider {
             );
         });
     }
+
     public void await() {
         while(!exe.isIdle()) {
             try {

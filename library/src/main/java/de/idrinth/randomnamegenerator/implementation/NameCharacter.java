@@ -4,12 +4,15 @@ import de.idrinth.randomnamegenerator.NameCharacterProvider;
 import de.idrinth.randomnamegenerator.shared.IncrementableHashMap;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class NameCharacter implements NameCharacterProvider {
+public final class NameCharacter implements NameCharacterProvider {
 
     private BigDecimal chance = BigDecimal.ZERO;
     private BigInteger total = BigInteger.ZERO;
     private final IncrementableHashMap list = new IncrementableHashMap();
+    private final Random rand = ThreadLocalRandom.current();
 
     @Override
     public void add(Character c, BigInteger amount) {
@@ -27,7 +30,7 @@ public class NameCharacter implements NameCharacterProvider {
         if (total.compareTo(BigInteger.ZERO) == 0 || chance.compareTo(BigDecimal.valueOf(Math.random())) >= 0) {
             return "";//the end
         }
-        BigDecimal target = BigDecimal.valueOf(Math.random()).multiply(BigDecimal.valueOf(total.longValue()));
+        BigDecimal target = BigDecimal.valueOf(rand.nextDouble()).multiply(BigDecimal.valueOf(total.longValue()));
         BigDecimal now = BigDecimal.ZERO;
         for (String key : list.keySet()) {
             now = now.add(BigDecimal.valueOf(list.get(key).longValue()));

@@ -6,12 +6,15 @@ import de.idrinth.randomnamegenerator.implementation.MultiLanguageData;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.io.IOUtils;
 
-public class API {
+public final class API {
 
     private final DataProvider firstNames;
     private final DataProvider lastNames;
+    private final Random rand = ThreadLocalRandom.current();
 
     public static void main(String[] args) {
         API api = new API(API.languages());
@@ -19,6 +22,7 @@ public class API {
             System.out.println(api.makeFullName());
         }
     }
+
     public static String[] languages() {
         try {
             InputStream stream = API.class.getResourceAsStream("/languages.txt");
@@ -34,6 +38,7 @@ public class API {
             new MultiLanguageData(new LastNameLoader(), languages)
         );
     }
+
     public API(DataProvider firstNames, DataProvider lastNames) {
         this.lastNames = lastNames;
         this.firstNames = firstNames;
@@ -47,7 +52,7 @@ public class API {
         StringBuilder name = new StringBuilder();
         while (true) {
             String temp = provider.getNext(name.toString()).get();
-            if (!temp.isEmpty()) {
+            if (temp.isEmpty()) {
                 name.setCharAt(0, String.valueOf(name.charAt(0)).toUpperCase().charAt(0));
                 return name.toString();
             }
@@ -64,13 +69,15 @@ public class API {
     }
 
     public String makeFullName() {
-        switch ((int) Math.floor(Math.random() * 4)) {
+        switch (rand.nextInt(4)) {
             case 1:
                 return makeFirstName() + " " + makeFirstName() + " " + makeLastName();
             case 2:
                 return makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeLastName();
             case 3:
                 return makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeLastName();
+            case 4:
+                return makeFirstName() + " " + makeFirstName() + " " + makeFirstName() + " " + makeLastName() + "-" + makeLastName();
             default:
                 return makeFirstName() + " " + makeLastName();
         }
@@ -83,6 +90,7 @@ public class API {
     public void addFirstNames(List<String> names) {
         names.forEach(this::addFirstName);
     }
+
     public void addFirstNames(String ...names) {
         for (String name : names) {
             addFirstName(name);
@@ -96,6 +104,7 @@ public class API {
     public void addLastNames(List<String> names) {
         names.forEach(this::addLastName);
     }
+
     public void addLastNames(String ...names) {
         for (String name : names) {
             addLastName(name);

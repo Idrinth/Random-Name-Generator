@@ -2,7 +2,7 @@ package de.idrinth.randomnamegenerator.implementation;
 
 import de.idrinth.randomnamegenerator.Configuration;
 
-public class DefaultConfiguration implements Configuration{
+public final class DefaultConfiguration implements Configuration{
     @Override
     public int getMultiplierStarters() {
         return 10000;
