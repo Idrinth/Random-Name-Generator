@@ -1,7 +1,2 @@
-/nbproject
-/.project
-/.classpath
-/nbactions.xml
-/nb-configuration.xml
-/target
-/bin
+/plugin/target/
+/shared/target/
