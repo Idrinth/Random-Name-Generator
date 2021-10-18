@@ -1,9 +1,24 @@
 package de.idrinth.randomnamegenerator.implementation;
 
+import de.idrinth.randomnamegenerator.NoData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DataTest {
+
+    @Test
+    public void testThrowsOnEmptyData()
+    {
+        Data instance = new Data();
+        assertThrows(NoData.class, () -> instance.getNext(""));
+    }
+
+    @Test
+    public void testLoadingOfNoneExistantLanguage()
+    {
+        Data instance = new Data(new FirstNameLoader(), "bullshit");
+        assertTrue(instance.isEmpty());
+    }
 
     private String getLongRandomString() {
         String[] letters = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzäöüß".split("");

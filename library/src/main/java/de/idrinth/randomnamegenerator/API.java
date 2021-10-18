@@ -47,7 +47,7 @@ public final class API {
     private String makeName(DataProvider provider)
     {
         if (provider.isEmpty()) {
-            throw new IndexOutOfBoundsException("Dataprovider is empty");
+            throw new NoData();
         }
         StringBuilder name = new StringBuilder();
         while (true) {

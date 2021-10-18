@@ -1,6 +1,8 @@
 package de.idrinth.randomnamegenerator;
 
 import de.idrinth.randomnamegenerator.shared.BoundedCacheThreadPoolExecutor;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -47,6 +48,17 @@ public class APITest {
         Method method = API.class.getMethod("main", String[].class);
         assertNotNull(method);
         assertEquals(void.class, method.getReturnType());
+    }
+
+    @Test
+    public void testMainExecution() throws NoSuchMethodException {
+        System.out.println("main");
+        PrintStream out = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        API.main(new String[0]);
+        System.setOut(out);
+        assertFalse(outContent.toString().isBlank());
     }
 
     @Test

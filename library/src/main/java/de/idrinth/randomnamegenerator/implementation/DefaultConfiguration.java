@@ -5,7 +5,7 @@ import de.idrinth.randomnamegenerator.Configuration;
 public final class DefaultConfiguration implements Configuration{
     @Override
     public int getMultiplierStarters() {
-        return 10000;
+        return 1000000000;
     }
 
     @Override
@@ -15,16 +15,16 @@ public final class DefaultConfiguration implements Configuration{
 
     @Override
     public int getMultiplierTwo() {
-        return 8;
+        return 100;
     }
 
     @Override
     public int getMultiplierThree() {
-        return 27;
+        return 10000;
     }
 
     @Override
     public int getMultiplierFour() {
-        return 64;
+        return 1000000;
     }
 }

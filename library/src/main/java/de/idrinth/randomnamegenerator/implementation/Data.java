@@ -82,7 +82,20 @@ public final class Data implements DataProvider {
     private void addDataOfJSONObject(JSONObject result, String property, IncrementableHashMap map) {
         if (result.has(property)) {
             result.getJSONObject(property).keySet().forEach((key) -> {
-                map.increment(key, result.getJSONObject(property).getBigInteger(key));
+                String name = key;
+                if (name.contains("\\u")) {
+                    String[] data = name.split("\\\\u");
+                    name = data[0];
+                    for (int i=1; i < data.length; i++) {
+                        String code = data[i].substring(0, 4);
+                        int c = Integer.valueOf(code, 16);
+                        name += ((char)c) + data[i].substring(4);
+                    }
+                }
+                map.increment(
+                    name,
+                    result.getJSONObject(property).getBigInteger(key)
+                );
             });
         }
     }

@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <mainClass>de.idrinth.name_generator.API</mainClass>
+        <mainClass>de.idrinth.randomnamegenerator.API</mainClass>
     </properties>
 
     <repositories>
@@ -24,12 +24,12 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20190722</version>
+            <version>20210307</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.7</version>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.everit-org.json-schema</groupId>
