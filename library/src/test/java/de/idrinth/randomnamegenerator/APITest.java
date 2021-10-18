@@ -58,7 +58,7 @@ public class APITest {
         System.setOut(new PrintStream(outContent));
         API.main(new String[0]);
         System.setOut(out);
-        assertFalse(outContent.toString().isBlank());
+        assertFalse(outContent.toString().isEmpty());
     }
 
     @Test
