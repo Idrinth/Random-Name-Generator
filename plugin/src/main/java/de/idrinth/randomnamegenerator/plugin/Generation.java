@@ -19,6 +19,9 @@ public class Generation implements org.apache.maven.plugin.Mojo {
         new File(target + "/classes/parsed").mkdirs();
         FileUtils.writeStringToFile(new File(target + "/classes/languages.txt"), "", "UTF-8");
         for (File folder : new File(target + "/../sources").listFiles()) {
+            if (!folder.isDirectory()) {
+                continue;
+            }
             boolean added = false;
             log.info("Started folder "+folder);
             for (File innerFolder : folder.listFiles()) {
